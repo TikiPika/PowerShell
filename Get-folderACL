@@ -1,0 +1,26 @@
+# 设置共享文件夹路径
+$sharedFolder = "C:\path\to\shared\folder"
+
+# 递归获取文件夹的权限信息
+function Get-FolderPermissions {
+    param(
+        [string]$folderPath
+    )
+    
+    # 获取文件夹的访问权限信息
+    $folderACL = Get-Acl -Path $folderPath
+    
+    # 输出文件夹路径和权限信息
+    Write-Output "$folderPath :"
+    foreach ($accessRule in $folderACL.Access) {
+        Write-Output "    $($accessRule.IdentityReference) - $($accessRule.FileSystemRights)"
+    }
+
+    # 递归获取子文件夹的权限信息
+    foreach ($subfolder in Get-ChildItem -Path $folderPath -Directory) {
+        Get-FolderPermissions -folderPath $subfolder.FullName
+    }
+}
+
+# 获取共享文件夹及其子文件夹的权限信息
+Get-FolderPermissions -folderPath $sharedFolder
