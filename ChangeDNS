@@ -4,20 +4,8 @@ $dns2 = "8.8.4.4"
 $dns3 = "1.1.1.1"
 $dns4 = "1.0.0.1"
 
-# 指定目标计算机名
-$targetComputer = "COMPUTER_NAME"
+# 获取当前的网络适配器配置
+$networkAdapter = Get-WmiObject Win32_NetworkAdapterConfiguration | Where-Object { $_.IPEnabled -eq $true }
 
-try {
-    # 远程执行 PowerShell 脚本
-    Invoke-Command -ComputerName $targetComputer -ScriptBlock {
-        # 获取当前的网络适配器配置
-        $networkAdapter = Get-WmiObject Win32_NetworkAdapterConfiguration | Where-Object { $_.IPEnabled -eq $true }
-
-        # 设置 DNS 地址
-        $networkAdapter.SetDNSServerSearchOrder($using:dns1, $using:dns2, $using:dns3, $using:dns4)
-
-        Write-Host "DNS 地址已经更新为 $using:dns1, $using:dns2, $using:dns3, $using:dns4 在计算机 $env:COMPUTERNAME 上。"
-    } -Credential (Get-Credential) -ErrorAction Stop
-} catch {
-    Write-Host "无法在计算机 $targetComputer 上更新 DNS 地址：" $_.Exception.Message
-}
+# 设置 DNS 地址
+$networkAdapter.SetDNSServerSearchOrder($dns1, $dns2, $dns3, $dns4)
