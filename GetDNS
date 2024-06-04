@@ -1,0 +1,19 @@
+# 获取域中所有计算机
+$computers = Get-ADComputer -Filter *
+
+# 遍历所有计算机
+foreach ($computer in $computers) {
+    $computerName = $computer.Name
+
+    # 使用 Test-Connection cmdlet 获取计算机的 IP 地址
+    $ipAddress = Test-Connection -ComputerName $computerName -Count 1 | Select-Object -ExpandProperty IPV4Address
+
+    # 使用 Get-WmiObject 获取计算机的网络适配器配置
+    $networkAdapter = Get-WmiObject Win32_NetworkAdapterConfiguration -ComputerName $computerName | Where-Object { $_.IPEnabled }
+
+    # 获取当前 DNS 设置
+    $dnsServers = $networkAdapter.DNSServerSearchOrder -join ","
+
+    # 输出计算机名、IP 地址和 DNS 设置
+    Write-Host "计算机名: $computerName, IP 地址: $ipAddress, DNS 设置: $dnsServers"
+}
