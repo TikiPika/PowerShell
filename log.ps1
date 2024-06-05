@@ -1,6 +1,10 @@
 New-PSDrive -Name "X" -PSProvider FileSystem -Root "\\server\share" -Persist
 
-
+# 检查计划任务是否存在
+if (Get-ScheduledTask -TaskName "ipconfig" -ErrorAction SilentlyContinue) {
+    # 如果存在，删除计划任务
+    Unregister-ScheduledTask -TaskName "ipconfig" -Confirm:$false
+}
 
 # 定义网络共享盘路径
 $outputFile = "\\server\share\path\outputfile.txt"
