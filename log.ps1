@@ -1,6 +1,4 @@
-$credential = Get-Credential -Credential $env:USERNAME
-New-PSDrive -Name "Z" -PSProvider FileSystem -Root "\\server\share" -Credential $credential
-
+New-PSDrive -Name "X" -PSProvider FileSystem -Root "\\server\share" -Persist
 
 
 
