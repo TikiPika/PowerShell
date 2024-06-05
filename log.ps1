@@ -1,3 +1,9 @@
+$credential = Get-Credential -Credential $env:USERNAME
+New-PSDrive -Name "Z" -PSProvider FileSystem -Root "\\server\share" -Credential $credential
+
+
+
+
 # 定义网络共享盘路径
 $outputFile = "\\server\share\path\outputfile.txt"
 
